@@ -21,7 +21,7 @@
     </head>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gradient-to-r from-green-400 to-blue-500 sm:items-center py-4 sm:pt-0">
-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 font-bold text-6xl text-white">
+            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 font-bold text-8xl text-white">
                 Lets Go !
             </div>
         </div>
