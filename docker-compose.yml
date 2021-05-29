@@ -8,6 +8,10 @@ services:
   app:
     build:
       context: ./docker/app
+      args:
+        WWWUSER: '${WWWUSER}'
+        WWWGROUP: '${WWWGROUP}'
+    user: '${WWWUSER}:${WWWGROUP}'
     networks:
       - app
     volumes:

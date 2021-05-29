@@ -1,5 +1,8 @@
 FROM php:8.0-fpm
 
+ARG WWWUSER
+ARG WWWGROUP
+
 # Set working directory
 WORKDIR /var/www
 
@@ -34,3 +37,7 @@ RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Create app'owner
+RUN groupadd --force -g $WWWGROUP heracles
+RUN useradd --create-home --shell /bin/bash --no-user-group --gid $WWWGROUP --uid $WWWUSER heracles
