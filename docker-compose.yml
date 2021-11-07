@@ -12,6 +12,7 @@ services:
       - app
     volumes:
       - '.:/var/www'
+    user: "${WWW_USER}"
 
   nginx:
     build:
