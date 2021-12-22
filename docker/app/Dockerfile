@@ -1,5 +1,9 @@
 FROM php:8.0-fpm
 
+ARG WWW_USER
+ARG WWW_GROUP
+ARG NODE_VERSION=16
+
 # Set working directory
 WORKDIR /var/www
 
@@ -26,15 +30,16 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Get latest Composer
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
-# Install Yarn
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - \
+# Install Nodejs
+RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
 	&& apt-get install -y nodejs \
-	&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-	&& echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
-	&& apt-get update \
-	&& apt-get install -y yarn
+    && npm install -g npm
 
 # Clear cache
 RUN apt-get -y autoremove \
 	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Create user
+RUN groupadd --force -g $WWW_GROUP webapp
+RUN useradd -ms /bin/bash --no-user-group -g $WWW_GROUP -u $WWW_USER webapp

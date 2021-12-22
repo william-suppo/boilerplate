@@ -8,11 +8,14 @@ services:
   app:
     build:
       context: ./docker/app
+      args:
+        WWW_USER: '${WWW_USER}'
+        WWW_GROUP: '${WWW_GROUP}'
     networks:
       - app
     volumes:
       - '.:/var/www'
-    user: "${WWW_USER}"
+    user: '${WWW_USER}'
 
   nginx:
     build:
