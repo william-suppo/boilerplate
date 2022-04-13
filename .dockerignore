@@ -1,0 +1,8 @@
+.git
+public/css/app.css
+public/js/app.js
+public/js/app.js.LICENSE.txt
+public/mix-manifest.json
+node_modules
+vendor
+.env
