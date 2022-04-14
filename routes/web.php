@@ -16,3 +16,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('whoami', function () {
+    $user = Illuminate\Support\Facades\Auth::user();
+
+    echo $user ? $user->name : 'no body';
+});
+
+Route::get('auth', function () {
+    $user = App\Models\User::first() ?: App\Models\User::factory()->create();
+
+    Illuminate\Support\Facades\Auth::login($user);
+
+    return redirect('/whoami');
+});

@@ -6,3 +6,10 @@ public/mix-manifest.json
 node_modules
 vendor
 .env
+storage/app/public/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*

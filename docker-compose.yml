@@ -4,16 +4,21 @@ networks:
   app:
     driver: bridge
 
+volumes:
+  mysql:
+    driver: local
+
 services:
   app:
-    image: 'williamsuppo/php:8.1'
+    image: 'local/boilerplate:latest'
     networks:
       - app
     ports:
-      - '${APP_PORT:-80}:80'
-    volumes:
-      - '.:/app'
-    user: '${WWW_USER}'
+      - '${APP_PORT:-8089}:80'
+    environment:
+      APP_ENV: 'production'
+      APP_DEBUG: 'false'
+      APP_KEY: 'base64:xdyl3ZeI2L6WOqeHaQUkLST1d6/9/Qj0vB8OZT3O4l8='
 
   mysql:
     image: 'mysql:8.0'

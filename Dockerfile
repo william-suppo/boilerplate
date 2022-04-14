@@ -1,30 +1,41 @@
-FROM williamsuppo/php:8.1 as base
+FROM php:8.1-apache-buster as dev
 
-ARG WWW_USER=1000
-ARG WWW_GROUP=1000
-ARG WORKING_DIR=/app
+# Install packages
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    libpq-dev \
+    libzip-dev \
+    libcurl4-openssl-dev \
+    zip \
+    unzip
 
-# Copy source code
-COPY --chown=${WWW_USER}:${WWW_GROUP} . ${WORKING_DIR}
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip curl intl
 
-FROM base as build
+# Get latest Composer
+RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
-USER webapp
+# Copy vhost config
+COPY vhost.conf /etc/apache2/sites-available/000-default.conf
+
+RUN a2enmod rewrite
+
+FROM dev as prod
+
+# Copy app source code
+COPY --chown=www-data:www-data . /var/www/html
+
+USER www-data
 
 # Install composer dependencies
-RUN composer install
+RUN composer install --prefer-dist --optimize-autoloader --no-interaction
 
-# Install npm dependencies
-RUN npm ci
-
-# Build assets
-RUN npm run prod
-
-FROM base as prod
-
-ARG WWW_USER=1000
-ARG WWW_GROUP=1000
-ARG WORKING_DIR=/app
-
-COPY --from=build --chown=${WWW_USER}:${WWW_GROUP} ${WORKING_DIR}/public ./public
-COPY --from=build --chown=${WWW_USER}:${WWW_GROUP} ${WORKING_DIR}/vendor ./vendor
+# Copy .env file
+COPY --chown=www-data:www-data .env.example /var/www/html/.env
