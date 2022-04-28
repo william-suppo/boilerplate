@@ -1,7 +1,7 @@
 .PHONY: up
 up:
-	docker-compose up -d
-	docker-compose exec app composer install
+	docker-compose up --build -d
+	docker-compose exec app composer install --quiet --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 	docker-compose exec app npm ci
 	docker-compose exec app npm run dev
 
